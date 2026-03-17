@@ -81,14 +81,6 @@ export async function scanAttendance(registrationId) {
   return parseJson(response);
 }
 
-export async function syncGoogleSheet() {
-  const response = await fetch("/api/google-sheets/sync", {
-    method: "POST"
-  });
-
-  return parseJson(response);
-}
-
 export function buildExportUrl({ search = "", passType = "" } = {}) {
   const params = new URLSearchParams({ format: "csv" });
 

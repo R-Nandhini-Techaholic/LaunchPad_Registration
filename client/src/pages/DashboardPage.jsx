@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import {
   buildExportUrl,
   deleteStudent,
-  getMeta,
   getStudents,
-  syncGoogleSheet,
   updateStudent
 } from "../api.js";
 import PassBadge from "../components/PassBadge.jsx";
@@ -24,11 +22,9 @@ export default function DashboardPage({ refreshKey, onStudentsChanged }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [meta, setMeta] = useState(null);
   const [editingStudent, setEditingStudent] = useState(null);
   const [editForm, setEditForm] = useState(initialEditForm);
   const [isSaving, setIsSaving] = useState(false);
-  const [syncingSheet, setSyncingSheet] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -60,30 +56,6 @@ export default function DashboardPage({ refreshKey, onStudentsChanged }) {
       ignore = true;
     };
   }, [search, passType, refreshKey]);
-
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadMeta() {
-      try {
-        const data = await getMeta();
-
-        if (!ignore) {
-          setMeta(data);
-        }
-      } catch (requestError) {
-        if (!ignore) {
-          setError(requestError.message);
-        }
-      }
-    }
-
-    loadMeta();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
 
   async function reloadStudents() {
     setLoading(true);
@@ -158,32 +130,6 @@ export default function DashboardPage({ refreshKey, onStudentsChanged }) {
     }
   }
 
-  async function handleGoogleSheetSync() {
-    setSyncingSheet(true);
-    setError("");
-    setMessage("");
-
-    try {
-      const data = await syncGoogleSheet();
-      setMessage(data.message);
-      setMeta((current) =>
-        current
-          ? {
-              ...current,
-              googleSheets: {
-                ...current.googleSheets,
-                ...data.googleSheets
-              }
-            }
-          : current
-      );
-    } catch (requestError) {
-      setError(requestError.message);
-    } finally {
-      setSyncingSheet(false);
-    }
-  }
-
   return (
     <section className="panel">
       <div className="card">
@@ -198,26 +144,6 @@ export default function DashboardPage({ refreshKey, onStudentsChanged }) {
             Export CSV
           </a>
         </div>
-
-        <div className="dashboard-actions">
-          <button className="button-secondary" type="button" onClick={handleGoogleSheetSync} disabled={syncingSheet}>
-            {syncingSheet ? "Syncing Sheet..." : "Sync Google Sheet"}
-          </button>
-
-          {meta?.googleSheets?.sheetUrl ? (
-            <a className="button-secondary" href={meta.googleSheets.sheetUrl} target="_blank" rel="noreferrer">
-              Open Google Sheet
-            </a>
-          ) : null}
-        </div>
-
-        {meta?.googleSheets?.configured ? (
-          <p className="message">Google Sheets is configured for quick organizer access.</p>
-        ) : (
-          <p className="message">
-            Google Sheets is not configured yet. Add the Google env vars to enable shared sheet sync.
-          </p>
-        )}
 
         <div className="toolbar">
           <label>

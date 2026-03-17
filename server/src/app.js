@@ -15,7 +15,6 @@ import {
   registrationIdExists,
   updateStudentByIdOrRegistrationId
 } from "./database.js";
-import { getGoogleSheetsConfig, syncStudentsToGoogleSheets } from "./utils/googleSheets.js";
 import { toCsv } from "./utils/csv.js";
 import {
   isValidRegistrationId,
@@ -69,8 +68,7 @@ app.get("/api/meta", (_request, response) => {
   response.json({
     eventName: "Launch Pad 2026",
     passTypes: PASS_TYPES,
-    databaseProvider: DATABASE_PROVIDER,
-    googleSheets: getGoogleSheetsConfig()
+    databaseProvider: DATABASE_PROVIDER
   });
 });
 
@@ -261,28 +259,6 @@ app.post("/api/attendance/scan", async (request, response, next) => {
       duplicate: false,
       student,
       attendance
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.post("/api/google-sheets/sync", async (_request, response, next) => {
-  try {
-    const students = await listStudents();
-    const result = await syncStudentsToGoogleSheets(students);
-
-    if (!result.configured) {
-      response.status(400).json({
-        message: "Google Sheets integration is not configured.",
-        googleSheets: result
-      });
-      return;
-    }
-
-    response.json({
-      message: "Google Sheet synced successfully.",
-      googleSheets: result
     });
   } catch (error) {
     next(error);

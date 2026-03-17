@@ -26,7 +26,6 @@ A full-stack QR-based event registration and attendance app for student check-in
 - Admin dashboard with search, pass filtering, attendance status, CSV export, edit, and delete actions
 - Attendance scanner page that uses the device camera to scan QR codes
 - Duplicate attendance prevention with saved scan timestamps
-- Optional Google Sheets sync for organizer-friendly registration review
 
 ## Project Structure
 
@@ -66,14 +65,6 @@ Copy `.env.example` if you want a starting point.
   Optional comma-separated list of allowed browser origins for local or cross-origin use.
 - `PORT`
   Local server port. Vercel sets its own runtime port automatically.
-- `GOOGLE_SHEETS_SPREADSHEET_ID`
-  The destination spreadsheet ID for organizer access.
-- `GOOGLE_SHEETS_TAB_NAME`
-  Sheet tab to overwrite during sync. Defaults to `Registrations`.
-- `GOOGLE_SERVICE_ACCOUNT_EMAIL`
-  Service account email with access to the spreadsheet.
-- `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`
-  Service account private key. Keep escaped newlines in env vars.
 
 If `DATABASE_URL` is not set, the app falls back to local SQLite in `server/data/launch-pad-2026.db`.
 
@@ -85,20 +76,6 @@ If `DATABASE_URL` is not set, the app falls back to local SQLite in `server/data
 4. Deploy.
 
 The frontend will be built from `client/`, and the Express backend will be served from `server.js`.
-
-## Google Sheets Setup
-
-1. Create a Google Cloud project and enable the Google Sheets API.
-2. Create a service account and generate a JSON key.
-3. Share your Google Sheet with the service account email as an editor.
-4. Add these env vars in Vercel:
-   - `GOOGLE_SHEETS_SPREADSHEET_ID`
-   - `GOOGLE_SHEETS_TAB_NAME`
-   - `GOOGLE_SERVICE_ACCOUNT_EMAIL`
-   - `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`
-5. In the admin dashboard, use `Sync Google Sheet` to write the current registration table to the sheet.
-
-The sheet sync writes a fresh snapshot of all registered students, including attendance status and scan time.
 
 ## Useful Scripts
 
@@ -118,7 +95,6 @@ The sheet sync writes a fresh snapshot of all registered students, including att
 - `GET /api/qrcode?registrationId=<id>`
 - `PUT /api/students/:id`
 - `DELETE /api/students/:id`
-- `POST /api/google-sheets/sync`
 
 ## Notes
 
