@@ -1,0 +1,4 @@
+
+> dev
+> concurrently "npm run dev --workspace launch-pad-2026-server" "npm run dev --workspace launch-pad-2026-client"
+

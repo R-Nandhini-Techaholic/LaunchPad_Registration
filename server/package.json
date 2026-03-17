@@ -1,0 +1,16 @@
+{
+  "name": "launch-pad-2026-server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "googleapis": "^150.0.1",
+    "pg": "^8.16.3",
+    "qrcode": "^1.5.4"
+  }
+}
